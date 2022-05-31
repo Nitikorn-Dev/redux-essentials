@@ -4,10 +4,10 @@ import { useAppDispatch, useAppSelector } from '../hooks'
 import { PostAuthor } from './PostAuthor';
 import ReactionButtons from './ReactionButtons';
 import { TimeAgo } from './TimeAgo';
-import { fetchPosts, postErrors, postStatus, selectAllPost } from '../posts/postsSlice';
+import { fetchPosts, postErrors, postStatus, selectAllPosts } from '../posts/postsSlice';
 import { Spinner } from '../../components/Spinner';
 
-const PostExcerpt: React.FC<{ post: any }> = ({ post }) => {
+let PostExcerpt: React.FC<{ post: any }> = ({ post }) => {
     return (
         <article className="post-excerpt" key={post.id}>
             <h3>{post.title}</h3>
@@ -24,9 +24,11 @@ const PostExcerpt: React.FC<{ post: any }> = ({ post }) => {
     )
 }
 
+PostExcerpt = React.memo(PostExcerpt)
+
 function PostsList() {
     const dispatch = useAppDispatch();
-    const posts = useAppSelector(state => selectAllPost(state.posts));
+    const posts = useAppSelector(selectAllPosts);
 
     const status = useAppSelector(state => postStatus(state.posts));
     const error = useAppSelector(state => postErrors(state.posts));

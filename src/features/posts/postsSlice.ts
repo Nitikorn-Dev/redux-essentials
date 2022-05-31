@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
 // import { sub } from 'date-fns';
 import { client } from '../../api/client';
+import { RootState } from '../store';
 
 type Optional<T> = {
     [P in keyof T]?: T[P]
@@ -172,9 +173,16 @@ const postsSlice = createSlice({
             })
     },
 })
-export const selectAllPost = (state: initalPostState) => state.data;
+export const selectAllPosts = (state: RootState) => state.posts.data;
 export const selectPostById = (state: initalPostState, postId: string) => state.data.find(post => post.id === postId);
 export const postErrors = (state: initalPostState) => state.error;
 export const postStatus = (state: initalPostState) => state.status;
+
+const selectItemId = (state: RootState, userId: string) => userId
+
+export const selectPostsByUser = createSelector(
+    [selectAllPosts, (state: RootState, userId: string) => userId],
+    (data, userId) => data.filter((post) => post.user === userId)
+)
 export const { addPost, postUpdated, reactionAdded } = postsSlice.actions;
 export default postsSlice.reducer

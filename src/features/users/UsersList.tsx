@@ -4,7 +4,7 @@ import { useAppSelector } from '../hooks'
 import { selectUsersAll } from './userSlice'
 
 function UsersList() {
-    const users = useAppSelector(state => selectUsersAll(state.users));
+    const users = useAppSelector(state => selectUsersAll(state));
     const renderedUsers = users.map(user => (
         <li key={user.id}>
             <Link to={`/users/${user.id}`}>{user.name}</Link>

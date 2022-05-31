@@ -8,7 +8,7 @@ import classnames from 'classnames'
 function NotificationsList() {
     const dispatch = useAppDispatch();
     const notifications = useAppSelector(selectAllNotifications);
-    const users = useAppSelector(state => selectUsersAll(state.users));
+    const users = useAppSelector(state => selectUsersAll(state));
 
     React.useEffect(() => {
         dispatch(allNotificationsRead())

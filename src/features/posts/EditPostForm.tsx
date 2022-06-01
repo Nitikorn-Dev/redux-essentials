@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { postUpdated } from './postsSlice';
+import { postUpdated, selectPostById } from './postsSlice';
 
 function EditPostForm() {
     const { postId } = useParams();
-    const post = useAppSelector(state => state.posts.data.find(post => post.id === postId));
+    // const post = useAppSelector(state => state.posts.data.find(post => post.id === postId));
+    const post = useAppSelector((state) => selectPostById(state, postId!))
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [form, setForm] = useState({ id: postId, title: post?.title, content: post?.content });

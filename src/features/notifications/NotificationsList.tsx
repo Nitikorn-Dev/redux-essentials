@@ -1,14 +1,14 @@
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { selectUsersAll } from '../users/userSlice';
+import { selectAllUsers } from '../users/userSlice';
 import { allNotificationsRead, selectAllNotifications } from './notificationsSlice'
 import classnames from 'classnames'
 
 function NotificationsList() {
     const dispatch = useAppDispatch();
     const notifications = useAppSelector(selectAllNotifications);
-    const users = useAppSelector(state => selectUsersAll(state));
+    const users = useAppSelector(selectAllUsers);
 
     React.useEffect(() => {
         dispatch(allNotificationsRead())

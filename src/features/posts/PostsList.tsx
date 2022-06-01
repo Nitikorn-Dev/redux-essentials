@@ -4,23 +4,32 @@ import { useAppDispatch, useAppSelector } from '../hooks'
 import { PostAuthor } from './PostAuthor';
 import ReactionButtons from './ReactionButtons';
 import { TimeAgo } from './TimeAgo';
-import { fetchPosts, postErrors, postStatus, selectAllPosts } from '../posts/postsSlice';
+import { fetchPosts, postErrors, postStatus, selectAllPosts, selectPostById, selectPostIds } from '../posts/postsSlice';
 import { Spinner } from '../../components/Spinner';
 
-let PostExcerpt: React.FC<{ post: any }> = ({ post }) => {
+let PostExcerpt: React.FC<{ postId: any }> = ({ postId }) => {
+    const post = useAppSelector(state => selectPostById(state, postId))
+
     return (
-        <article className="post-excerpt" key={post.id}>
-            <h3>{post.title}</h3>
-            <div>
-                <PostAuthor userId={post.user} />
-                <TimeAgo timestamp={post.date} />
-            </div>
-            <p className="post-content">{post.content.substring(0, 100)}</p>
-            <ReactionButtons post={post} />
-            <Link to={`/posts/${post.id}`} className="button muted-button">
-                View Post
-            </Link>
-        </article>
+        <React.Fragment>
+            {
+                post ?
+                    <article className="post-excerpt" key={post.id}>
+                        <h3>{post.title}</h3>
+                        <div>
+                            <PostAuthor userId={post.user} />
+                            <TimeAgo timestamp={post.date} />
+                        </div>
+                        <p className="post-content">{post.content.substring(0, 100)}</p>
+                        <ReactionButtons post={post} />
+                        <Link to={`/posts/${post.id}`} className="button muted-button">
+                            View Post
+                        </Link>
+                    </article>
+                    : null
+            }
+
+        </React.Fragment>
     )
 }
 
@@ -28,10 +37,10 @@ PostExcerpt = React.memo(PostExcerpt)
 
 function PostsList() {
     const dispatch = useAppDispatch();
-    const posts = useAppSelector(selectAllPosts);
-
-    const status = useAppSelector(state => postStatus(state.posts));
-    const error = useAppSelector(state => postErrors(state.posts));
+    // const posts = useAppSelector(selectAllPosts);
+    const orderedPostIds = useAppSelector(selectPostIds);
+    const status = useAppSelector(postStatus);
+    const error = useAppSelector(postErrors);
     console.log('PostList', status)
     useEffect(() => {
         if (status === 'idle') {
@@ -43,9 +52,9 @@ function PostsList() {
     if (status === 'loading') {
         content = <Spinner text='loading...' />
     } else if (status === 'succeeded') {
-        const orderPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date));
-        content = orderPosts.map(post => (
-            <PostExcerpt post={post} key={post.id} />
+        // const orderPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date));
+        content = orderedPostIds.map(postId => (
+            <PostExcerpt postId={postId} key={postId} />
         ));
     } else if (status === 'failed') {
         content = <div>{error}</div>

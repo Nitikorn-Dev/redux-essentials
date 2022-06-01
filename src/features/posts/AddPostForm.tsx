@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { selectAllUsers } from '../users/userSlice';
 import { addNewPost } from './postsSlice';
 
 function AddPostForm() {
-    const users = useAppSelector(state => state.users.data)
+    const users = useAppSelector(selectAllUsers)
 
     const dispatch = useAppDispatch();
 
